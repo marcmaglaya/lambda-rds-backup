@@ -1,0 +1,87 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "rds:AddTagsToResource",
+                "rds:CreateDBSnapshot",
+                "rds:DescribeDBSnapshots"
+            ],
+            "Resource": [
+                "arn:aws:rds:eu-west-1:038540414823:snapshot:*",
+                "arn:aws:rds:eu-west-1:038540414823:db:*"
+            ]
+        }
+    ]
+}
+cron(0 0/8 * * ? *)
+this will be trigger a lambda to back up rds every 8 hours
+
+
+import json
+import boto3
+import os
+
+def get_current_timestamp():
+    # Return the current timestamp in a specific format
+    import datetime
+    return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
+def lambda_handler(event, context):
+    
+    # Define the RDS instance and snapshot identifier
+    rds_instance_id=os.getenv('RDS_INSTANCE_ID')
+    snapshot_identifier = 'snapshot-{}'.format(get_current_timestamp())
+
+    # Create a new RDS client
+    rds_client = boto3.client('rds')
+
+    # Create the RDS instance snapshot
+    response = rds_client.create_db_cluster_snapshot(
+        DBClusterIdentifier=rds_instance_id,
+        DBClusterSnapshotIdentifier=snapshot_identifier
+    )
+
+    # Print the response for debugging purposes
+    print(response)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Snapshot Successfully Created')
+    }
+
+    RDS_INSTANCE_ID	ekar-prod
+
+    {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "rds:AddTagsToResource",
+                "rds:CreateDBSnapshot",
+                "rds:DescribeDBSnapshots",
+                "rds:CreateDBClusterSnapshot",
+                "rds:DescribeDBClusterSnapshots"
+            ],
+            "Resource": [
+                "arn:aws:rds:eu-west-1:625070516720:cluster-snapshot:*",
+                "arn:aws:rds:eu-west-1:625070516720:cluster:ekar-prod"
+            ]
+        }
+    ]
+}
+
+rds-backup-function-role-ulsb5m7g
+rds-backup-function-role-ulsb5m7g
+
+
+
+
+
+
+can two service be in same target group 
+
